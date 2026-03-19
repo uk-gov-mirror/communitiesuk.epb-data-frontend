@@ -384,7 +384,6 @@ module ViewModels
         Tunbridge Wells
         Uttlesford
         Vale of Glamorgan
-        Vale of Glamorgan
         Vale of White Horse
         Wakefield
         Walsall
@@ -972,7 +971,6 @@ module ViewModels
         Twickenham
         Tynemouth
         Uxbridge and South Ruislip
-        Vale of Glamorgan
         Vale of Glamorgan
         Vauxhall and Camberwell Green
         Wakefield and Rothwell
