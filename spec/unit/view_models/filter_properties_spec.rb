@@ -53,8 +53,8 @@ describe ViewModels::FilterProperties do
       expect(view_model.councils).to include(*expected_councils)
     end
 
-    it "returns 349 councills" do
-      expect(view_model.councils.length).to eq 349
+    it "returns 348 councills" do
+      expect(view_model.councils.length).to eq 348
     end
   end
 
@@ -68,8 +68,8 @@ describe ViewModels::FilterProperties do
       expect(view_model.parliamentary_constituencies).to include(*expected_parliamentary_constituencies)
     end
 
-    it "returns 597 rows" do
-      expect(view_model.parliamentary_constituencies.length).to eq 597
+    it "returns 596 rows" do
+      expect(view_model.parliamentary_constituencies.length).to eq 596
     end
   end
 
