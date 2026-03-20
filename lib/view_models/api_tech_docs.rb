@@ -67,7 +67,7 @@ module ViewModels
     def self.curl_example(url_path)
       url = "#{base_url}#{url_path}"
       str = <<~CODE
-        curl #{url}  \\
+        curl "#{url}"  \\
         -H "Authorization: Bearer my_bearer_token"  \\
         -H "Accept: application/json"
       CODE
@@ -77,7 +77,7 @@ module ViewModels
     def self.download_file_example(url_path, assessment_type)
       url = "#{base_url}#{url_path}"
       str = <<~CODE
-        curl #{url} \\
+        curl "#{url}" \\
         -H "Authorization: Bearer my_bearer_token" \\
         -H "Accept: application/json" \\
         -L  \\
