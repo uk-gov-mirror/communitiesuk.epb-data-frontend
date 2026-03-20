@@ -121,7 +121,6 @@ module ViewModels
         Bury
         Caerfyrddin
         Caerphilly
-        Caerphilly
         Calderdale
         Cambridge
         Camden
@@ -263,7 +262,6 @@ module ViewModels
         Milton Keynes
         Mole Valley
         Monmouthshire
-        Monmouthshire
         Montgomeryshire and Glyndwr
         Neath and Swansea East
         Neath Port Talbot
@@ -377,7 +375,6 @@ module ViewModels
         Tonbridge and Malling
         Torbay
         Torfaen
-        Torfaen
         Torridge
         Tower Hamlets
         Trafford
@@ -414,7 +411,6 @@ module ViewModels
         Wolverhampton
         Worcester
         Worthing
-        Wrexham
         Wrexham
         Wychavon
         Wyre
@@ -496,7 +492,6 @@ module ViewModels
         Brent West
         Brentwood and Ongar
         Bridgend
-        Bridgend
         Bridgwater
         Bridlington and The Wolds
         Brigg and Immingham
@@ -519,7 +514,6 @@ module ViewModels
         Bury South
         Bury St Edmunds and Stowmarket
         Caerfyrddin
-        Caerphilly
         Caerphilly
         Calder Valley
         Camborne and Redruth
@@ -768,7 +762,6 @@ module ViewModels
         Milton Keynes North
         Mitcham and Morden
         Monmouthshire
-        Monmouthshire
         Montgomeryshire and Glyndwr
         Morecambe and Lunesdale
         Neath and Swansea East
@@ -963,7 +956,6 @@ module ViewModels
         Tooting
         Torbay
         Torfaen
-        Torfaen
         Torridge and Tavistock
         Tottenham
         Truro and Falmouth
@@ -1013,7 +1005,6 @@ module ViewModels
         Worcester
         Worsley and Eccles
         Worthing West
-        Wrexham
         Wrexham
         Wycombe
         Wyre Forest

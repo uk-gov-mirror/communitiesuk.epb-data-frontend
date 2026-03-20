@@ -53,8 +53,12 @@ describe ViewModels::FilterProperties do
       expect(view_model.councils).to include(*expected_councils)
     end
 
-    it "returns 348 councills" do
-      expect(view_model.councils.length).to eq 348
+    it "returns 348 councils" do
+      expect(view_model.councils.length).to eq 344
+    end
+
+    it "has no dupes" do
+      expect(view_model.councils.length).to eq 344
     end
   end
 
@@ -69,7 +73,11 @@ describe ViewModels::FilterProperties do
     end
 
     it "returns 596 rows" do
-      expect(view_model.parliamentary_constituencies.length).to eq 596
+      expect(view_model.parliamentary_constituencies.length).to eq 591
+    end
+
+    it "has no dupes" do
+      expect(view_model.parliamentary_constituencies.uniq.length).to eq 591
     end
   end
 
