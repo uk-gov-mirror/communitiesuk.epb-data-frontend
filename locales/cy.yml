@@ -338,7 +338,7 @@ cy:
 #      link: "<a class=\"govuk-link\" href=\"https://api-docs.epcregisters.net/\" rel=\"license\">View technical documentation</a>"
 
   signed_out:
-    title: "Rydych chi wedi allgofnodi"
+    title: "Rydych chi wedi cael eich allgofnodi"
     link: "I fynd yn ôl, mewngofnodwch i’n gwasanaeth gan ddefnyddio"
 
   date:

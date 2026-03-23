@@ -182,13 +182,17 @@ describe "Acceptance::FilterProperties", type: :feature do
         end
       end
 
-      context "when no email is present in the session" do
+      context "when the session has expired" do
         before do
-          allow(Helper::Session).to receive(:get_session_value).and_return(nil)
+          allow(Helper::Session).to receive(:get_email_from_session).and_raise(Errors::SessionEmailError)
+        end
+
+        it "no error is raised" do
+          expect(valid_response.status).not_to eq(500)
         end
 
         it "the user is redirected back to the one login login page" do
-          expect(valid_response.headers["Location"]).to eq("#{local_host}/login/authorize?referer=filter-properties")
+          expect(valid_response.headers["Location"]).to eq("#{local_host}/signed-out")
         end
       end
     end

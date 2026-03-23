@@ -42,6 +42,8 @@ module Controller
           @errors[:data_not_found] = t("error.data_not_found")
           @error_form_ids << "filter-properties-header"
           erb :filter_properties, locals: { use_case: @container.get_object(:get_file_size_use_case) }
+        when Errors::SessionEmailError
+          redirect "/signed-out"
         when Errors::UserEmailNotVerified, Errors::AuthenticationError, Errors::NetworkError
           logger.warn "Authentication error: #{e.message}"
           redirect "/login/authorize?referer=filter-properties"
@@ -86,6 +88,8 @@ module Controller
           t('layout.body.govuk')
         }"
         status 404
+      when Errors::SessionEmailError
+        redirect "/signed-out"
       else
         logger.error "Unexpected error during filter_properties: #{e.message}"
         server_error(e)

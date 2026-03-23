@@ -138,6 +138,9 @@ module Errors
   class KmsDecryptionError < RuntimeError
   end
 
+  class SessionEmailError < RuntimeError
+  end
+
   module DoNotReport
   end
 end

@@ -1,7 +1,11 @@
 describe "Acceptance::RequestReceivedConfirmation", type: :feature do
   include RSpecFrontendServiceMixin
+  let(:domain) do
+    "http://get-energy-performance-data"
+  end
+
   let(:local_host) do
-    "http://get-energy-performance-data/request-received-confirmation"
+    "#{domain}/request-received-confirmation"
   end
   let(:valid_dates) do
     "from-year=2023&from-month=January&to-year=2025&to-month=February"
@@ -166,6 +170,22 @@ describe "Acceptance::RequestReceivedConfirmation", type: :feature do
 
       it "adds commas to the displayed number" do
         expect(last_response.body).to have_css(".govuk-body", text: "Your request contains 123,456 certificates.")
+      end
+    end
+
+    context "when user session has expired" do
+      before do
+        allow(Helper::Session).to receive(:get_email_from_session).and_raise(Errors::SessionEmailError)
+        header "Referer", "http://get-energy-performance-data/filter-properties"
+        get "#{local_host}?property_type=domestic&#{valid_dates}&#{valid_eff_rating}"
+      end
+
+      it "no error is raised" do
+        expect(last_response.status).not_to eq(500)
+      end
+
+      it "the user is redirected back to the one login login page" do
+        expect(last_response.headers["Location"]).to eq("#{domain}/signed-out")
       end
     end
   end

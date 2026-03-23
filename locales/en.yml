@@ -338,7 +338,7 @@ en:
 #      link: "<a class=\"govuk-link\" href=\"https://api-docs.epcregisters.net/\" rel=\"license\">View technical documentation</a>"
 
   signed_out:
-    title: "You have signed out"
+    title: "You have been signed out"
     link: "To go back, sign in to our service using"
 
   date:

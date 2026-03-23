@@ -22,7 +22,7 @@ module Helper
 
     def self.get_email_from_session(session)
       email = get_session_value(session, :email_address)
-      raise Errors::AuthenticationError, "Failed to get user email from session" unless email
+      raise Errors::SessionEmailError unless email
 
       email
     end

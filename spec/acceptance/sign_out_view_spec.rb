@@ -12,11 +12,11 @@ describe "Acceptance::SignOut", type: :feature do
   end
 
   it "has correct header" do
-    expect(response.body).to have_selector("h1", text: "You have signed out")
+    expect(response.body).to have_selector("h1", text: "You have been signed out")
   end
 
   it "displays the title the same as the main header value" do
-    expect(response.body).to have_title "You have signed out – GOV.UK"
+    expect(response.body).to have_title "You have been signed out – GOV.UK"
   end
 
   it "the one login link is included" do
