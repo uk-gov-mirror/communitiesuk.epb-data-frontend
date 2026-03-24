@@ -109,9 +109,7 @@ en:
   accessibility_statement:
     top_heading: "Accessibility statement"
     intro: "This statement applies to content published on:"
-    intro_list:
-      link_1:  "find-energy-certificate"
-      link_2:  "get-new-energy-certificate"
+    service_link: "get-energy-performance-data.communities.gov.uk/"
     paragraph_1:
       text: "This website is run by the Ministry of Housing, Communities and Local Government. We want as many people as possible to be able to use this website. For example, that means you should be able to:"
       list:

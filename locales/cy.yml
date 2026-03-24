@@ -108,9 +108,7 @@ cy:
   accessibility_statement:
     top_heading: "Datganiad ar hygyrchedd"
     intro: "Mae’r datganiad hwn yn gymwys i gynnwys a gyhoeddir ar:"
-    intro_list:
-      link_1: "dod-o-hyd-i-dystysgrif-ynni"
-      link_2: "cael-tystysgrif-ynni-newydd"
+    service_link: "get-energy-performance-data.communities.gov.uk/"
     paragraph_1:
       text: "Mae’r wefan hon yn cael ei rhedeg gan y Weinyddiaeth Dai, Cymunedau a Llywodraeth Leol. Hoffem weld cynifer â phosibl o bobl yn gallu defnyddio’r wefan. Er enghraifft, mae hynny’n golygu y dylech chi allu:"
       list:
