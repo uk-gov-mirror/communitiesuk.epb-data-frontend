@@ -132,7 +132,8 @@ cy:
         email_subject: "EPB"
         telephone: "Ffôn: 020 3829 0748"
     reporting_heading: "Rhoi gwybod am broblemau hygyrchedd gyda’r wefan hon"
-    reporting_paragraph: "Rydyn ni bob amser yn chwilio am ffyrdd i wella hygyrchedd y wefan hon. Os gwelwch chi unrhyw broblemau sydd heb eu rhestru ar y tudalen hwn neu os nad ydych yn credu ein bod yn bodloni’r gofynion ynglŷn â hygyrchedd, <a class=\"govuk-link\" href=\"https://forms.office.com/e/KX25htGMX5\">rhowch  adborth</a>."
+    reporting_paragraph_before_link: "Rydyn ni bob amser yn chwilio am ffyrdd i wella hygyrchedd y wefan hon. Os gwelwch chi unrhyw broblemau sydd heb eu rhestru ar y tudalen hwn neu os nad ydych yn credu ein bod yn bodloni’r gofynion ynglŷn â hygyrchedd,"
+    reporting_paragraph_link_text: "rhowch adborth"
     enforcement_heading: "Gweithdrefn orfodi"
     enforcement_paragraph: "Mae’r Comisiwn Cydraddoldeb a Hawliau Dynol (EHRC) yn gyfrifol am orfodi Rheoliadau Hygyrchedd Cyrff y Sector Cyhoeddus (Gwefannau a Chymwysiadau Symudol) (Rhif 2) 2018 (y ‘rheoliadau hygyrchedd’). Os nad ydych yn fodlon ar sut rydyn ni’n ymateb i’ch cwyn, <a class=\"govuk-link\" href=\"https://www.equalityadvisoryservice.com/\">cysylltwch â’r Gwasanaeth Cyngor a Chymorth Cydraddoldeb (EASS)</a>."
     technical_heading: "Gwybodaeth dechnegol am hygyrchedd y wefan hon"
@@ -146,9 +147,9 @@ cy:
     out_of_scope_heading: "Cynnwys nad yw o fewn rhychwant y rheoliadau hygyrchedd"
     out_of_scope_paragraph: "Heb fod yn gymwys."
     what_we_do_heading: "Yr hyn rydyn ni’n ei wneud i wella hygyrchedd"
-    what_we_do_paragraph_1: "Byddwn yn parhau i fonitro hygyrchedd ein gwasanaethau. Byddwn yn diweddaru’r tudalen yma pan fyddwn yn gweld ac yn trwsio unrhyw faterion pellach."
+    what_we_do_paragraph_1: "Mae’r wefan hon i fod i gael ei phrofi eleni gan y Ganolfan Hygyrchedd Digidol (DAC), cwmni archwilio hygyrchedd annibynnol. Byddwn yn parhau i fonitro hygyrchedd ein gwasanaethau. Byddwn yn diweddaru’r dudalen hon pan fyddwn yn canfod ac yn datrys unrhyw broblemau pellach."
     preparation_heading: "Paratoi’r datganiad hygyrchedd hwn"
-    preparation_paragraph: "Cafodd y datganiad hwn ei baratoi ar 20 Medi 2020. Y tro diwethaf iddo gael ei adolygu oedd 17 Ionawr 2024."
+    preparation_paragraph: "Paratowyd y datganiad hwn ar 24 Mawrth 2026."
     accessibility_audit: "Y tro diwethaf i’r wefan hon gael ei phrofi oedd 3 Ionawr 2023. Cafodd y prawf ei gynnal gan y Ganolfan Hygyrchedd Digidol (DAC), sy’n gwmni archwilio hygyrchedd annibynnol. Cafodd amryw o siwrneiau drwy’r gwasanaeth eu profi. Roedd y tîm yn cynnwys profwyr anabl."
 
   service_unavailable:
