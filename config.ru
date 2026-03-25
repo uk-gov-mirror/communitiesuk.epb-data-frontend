@@ -73,7 +73,7 @@ csp_options = {
   report_uri: Sentry.csp_report_uri,
   report_ratio: 0.01,
   frame_ancestors: "'none'",
-  form_action: "'self' https://#{ENV['AWS_S3_USER_DATA_BUCKET_NAME']}.s3.eu-west-2.amazonaws.com"
+  form_action: "'self' https://#{ENV['AWS_S3_USER_DATA_BUCKET_NAME']}.s3.eu-west-2.amazonaws.com #{ENV['ONELOGIN_HOST_URL']}"
 }.delete_if { |_, value| value.nil? || value == '' }
 
 use Middleware::ContentSecurityPolicy, **Helper::GoogleCsp.add_options_for_google_analytics(csp_options)
