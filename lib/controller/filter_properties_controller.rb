@@ -6,6 +6,8 @@ module Controller
         @error_form_ids = []
         @back_link_href = "/type-of-properties"
 
+        email_address = Helper::Session.get_email_from_session(session)
+
         property_type = params["property_type"]
         raise Errors::InvalidPropertyType unless property_type_valid?(property_type)
 
@@ -28,7 +30,6 @@ module Controller
           raise Errors::FilteredDataNotFound if download_count.zero?
 
           Helper::Session.set_session_value(session, :download_count, download_count)
-          email_address = Helper::Session.get_email_from_session(session)
           send_download_request(email_address:, property_type:)
           form_data = Rack::Utils.build_nested_query(params)
           redirect "/request-received-confirmation?#{form_data}"
@@ -71,13 +72,16 @@ module Controller
       check_referral
       @page_title = "#{t('request_received.title')} – #{t('layout.body.govuk')}"
 
+      email = Helper::Session.get_email_from_session(session)
       property_type = params["property_type"]
       raise Errors::InvalidPropertyType unless property_type_valid?(property_type)
 
-      status 200
-      @back_link_href = "/filter-properties?property_type=#{property_type}"
-      email = Helper::Session.get_email_from_session(session)
       download_count = Helper::Session.get_download_count_from_session(session)
+
+      @back_link_href = "/filter-properties?property_type=#{property_type}"
+
+      status 200
+
       erb :request_received_confirmation, locals: { email:, download_count: }
     rescue StandardError => e
       case e
