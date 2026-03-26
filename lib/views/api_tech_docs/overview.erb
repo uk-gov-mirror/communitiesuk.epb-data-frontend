@@ -18,17 +18,18 @@
 
         <p class="govuk-body">
           We limit the number of requests each application can make. This protects our service against excessive use and Denial-of-Service attacks and encourages you to use our API endpoints efficiently.
-          We set limits based on anticipated loads and peaks. Our standard limit is three requests per second per application.
+          We set limits based on anticipated loads and peaks.
         </p>
         <p class="govuk-body">
           If you reach this limit, you’ll get a response with an HTTP status of 429 (Too Many Requests).
           If a 429 response is received, we recommend that your code should stop making additional API requests for a short period of time before retrying.
         </p>
         <p class="govuk-body">
-          Our rate limits are designed to encourage real-time interactions. As such we advise software developers to avoid batching requests if they wish to avoid being rate limited.
-        </p>
-        <p class="govuk-body">
           If you continually hit this rate limit, contact us to discuss your application design and whether it’s appropriate to raise your rate limit.
+        </p>
+
+        <p class="govuk-body">
+          The rate limit is set to 1000 requests per minute per IP Address
         </p>
       </div>
     </div>
