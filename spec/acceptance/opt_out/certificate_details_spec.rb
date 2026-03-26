@@ -274,7 +274,7 @@ describe "Acceptance::OptOutCertificateDetails", type: :feature do
       end
 
       context "when the text fields have tags present" do
-        let(:response) { post "#{base_url}/opt-out/certificate-details", { certificate_number: "0000-0000-0000-0000-0000", address_line1: "<img src=x onerror=alert(1)>1 Some Street", address_line2: "<h1>Heading</h1>Summer Grove", address_town: "<script>console.log('hello')</script>Large Town", address_postcode: "TE57 1NG" } }
+        let(:response) { post "#{base_url}/opt-out/certificate-details", { certificate_number: "0000-0000-0000-0000-0000", address_line1: "<img src=x onerror=alert(1)1 Some Street", address_line2: "<h1>Heading</h1>Summer Grove", address_town: "<script>console.log('hello')</script>Large Town", address_postcode: "TE57 1NG" } }
 
         it "returns status 200" do
           expect(response.status).to eq(200)

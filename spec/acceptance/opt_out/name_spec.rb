@@ -142,6 +142,22 @@ describe "Acceptance::OptOutOwner", type: :feature do
           expect(response.body).to have_css("p#name-error", text: /Invalid text/)
         end
       end
+
+      context "when the input includes incomplete tags" do
+        let(:response) { post "#{base_url}/opt-out/name", { name: "<img src=http://cataas.com/cat" } }
+
+        it "returns status 200" do
+          expect(response.status).to eq(200)
+        end
+
+        it "displays the error summary" do
+          expect(response.body).to have_css("div.govuk-error-summary")
+        end
+
+        it "displays the invalid text error" do
+          expect(response.body).to have_css("p#name-error", text: /Invalid text/)
+        end
+      end
     end
   end
 end

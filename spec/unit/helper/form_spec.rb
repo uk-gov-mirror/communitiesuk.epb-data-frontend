@@ -12,6 +12,11 @@ describe Helper::Form do
       expect(form_helper.has_tag?(string)).to be true
     end
 
+    it "returns true when the tag is broken" do
+      string = "<img src=http://cataas.com/cat"
+      expect(form_helper.has_tag?(string)).to be true
+    end
+
     it "return false when there are no tags in a string" do
       string = "Text?"
       expect(form_helper.has_tag?(string)).to be false
