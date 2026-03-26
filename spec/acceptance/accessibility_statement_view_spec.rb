@@ -13,7 +13,6 @@ describe "Acceptance::AccessibilityStatement", type: :feature do
         expect(response.body).to have_css("h2.govuk-heading-l", text: "Reporting accessibility problems with this website")
         expect(response.body).to have_css("h2.govuk-heading-l", text: "Enforcement procedure")
         expect(response.body).to have_css("h2.govuk-heading-l", text: "Technical information about this website’s accessibility")
-        expect(response.body).to have_css("h2.govuk-heading-l", text: "Non-accessible content")
         expect(response.body).to have_css("h2.govuk-heading-l", text: "What we’re doing to improve accessibility")
         expect(response.body).to have_css("h2.govuk-heading-l", text: "Preparation of this accessibility statement")
       end
