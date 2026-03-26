@@ -66,6 +66,8 @@ ENV["GTM_PROPERTY_FINDING"] = "G-H8EVD5HY3G"
 ENV["enable-csrf"] = "true"
 ENV["ALG"] = "RS256"
 
+one_login_signin_url = ENV['STAGE'] == 'production' ? "https://signin.account.gov.uk" : "https://signin.integration.account.gov.uk"
+
 csp_options = {
   script_src: "'nonce-#{ENV['SCRIPT_NONCE']}'",
   style_src: "'nonce-#{ENV['SCRIPT_NONCE']}' 'self'",
@@ -73,7 +75,7 @@ csp_options = {
   report_uri: Sentry.csp_report_uri,
   report_ratio: 0.01,
   frame_ancestors: "'none'",
-  form_action: "'self' https://#{ENV['AWS_S3_USER_DATA_BUCKET_NAME']}.s3.eu-west-2.amazonaws.com #{ENV['ONELOGIN_HOST_URL']} https://signin.integration.account.gov.uk"
+  form_action: "'self' https://#{ENV['AWS_S3_USER_DATA_BUCKET_NAME']}.s3.eu-west-2.amazonaws.com #{ENV['ONELOGIN_HOST_URL']} #{one_login_signin_url}"
 }.delete_if { |_, value| value.nil? || value == '' }
 
 use Middleware::ContentSecurityPolicy, **Helper::GoogleCsp.add_options_for_google_analytics(csp_options)
