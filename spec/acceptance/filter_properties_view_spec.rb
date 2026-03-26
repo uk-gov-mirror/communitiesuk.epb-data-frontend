@@ -57,6 +57,21 @@ describe "Acceptance::FilterProperties", type: :feature do
     ENV["STAGE"] = original_stage
   end
 
+  describe "post .get-energy-certificate-data.epb-frontend/filter-properties" do
+    let(:response) { post "#{request_url}?property_type=domestic" }
+
+    context "when the user is not authenticated" do
+      before do
+        allow(Helper::Session).to receive(:is_user_authenticated?).and_raise(Errors::AuthenticationError, "Session is not available")
+      end
+
+      it "redirects to /login/authorize using status 303" do
+        expect(response.status).to eq(303)
+        expect(response.location).to include "/login/authorize?referer=filter-properties"
+      end
+    end
+  end
+
   describe "get .get-energy-certificate-data.epb-frontend/filter-properties" do
     before do
       allow(ViewModels::FilterProperties).to receive(:get_full_load_file_size).and_return("3.5 GB")
@@ -141,7 +156,7 @@ describe "Acceptance::FilterProperties", type: :feature do
         after { allow(Helper::Session).to receive(:is_user_authenticated?).and_return(true) }
 
         it "redirects to the login page" do
-          expect(response).to be_redirect
+          expect(response.status).to eq(302)
           expect(response.location).to eq("http://get-energy-performance-data/login/authorize?referer=filter-properties")
         end
       end

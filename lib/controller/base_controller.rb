@@ -57,7 +57,7 @@ module Controller
                     "/login/authorize?referer=#{request.path.delete_prefix('/')}"
                   end
 
-      redirect login_url
+      redirect login_url, request.post? ? 303 : 302
     end
 
     configure :development do

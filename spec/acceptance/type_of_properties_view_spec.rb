@@ -4,9 +4,24 @@ describe "Acceptance::TypeOfProperties", type: :feature do
     "http://get-energy-performance-data/type-of-properties"
   end
 
-  let(:response) { get local_host }
+  describe "post .get-energy-certificate-data.epb-frontend/type-of-properties" do
+    let(:response) { post local_host }
+
+    context "when the user is not authenticated" do
+      before do
+        allow(Helper::Session).to receive(:is_user_authenticated?).and_raise(Errors::AuthenticationError, "Session is not available")
+      end
+
+      it "redirects to /login/authorize using status 303" do
+        expect(response.status).to eq(303)
+        expect(response.location).to include "/login/authorize?referer=type-of-properties"
+      end
+    end
+  end
 
   describe "get .get-energy-certificate-data.epb-frontend/type-of-properties" do
+    let(:response) { get local_host }
+
     before do
       allow(Helper::Session).to receive(:is_user_authenticated?).and_return(true)
     end
@@ -64,7 +79,7 @@ describe "Acceptance::TypeOfProperties", type: :feature do
       end
 
       it "routes to the domestic page with the domestic property_type param" do
-        expect(domestic_response).to be_redirect
+        expect(domestic_response.status).to eq(302)
         expect(domestic_response.location).to include("/filter-properties?property_type=domestic")
       end
 
