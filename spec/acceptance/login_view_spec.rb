@@ -108,7 +108,7 @@ describe "Acceptance::Login", type: :feature do
     context "when the request is received" do
       before do
         allow(sign_onelogin_request_test_use_case).to receive(:execute).and_return("test_signed_request")
-        get "#{login_url}/authorize"
+        get "#{login_url}/authorize?referer=filter-properties%3Fproperty_type%3Ddomestic"
       end
 
       it "returns status 302" do
@@ -133,6 +133,10 @@ describe "Acceptance::Login", type: :feature do
       it "does not return nil for nonce and state in session" do
         expect(last_request.session[:nonce]).not_to be_nil
         expect(last_request.session[:state]).not_to be_nil
+      end
+
+      it "sets the referer value in the session" do
+        expect(last_request.session[:referer]).to eq "filter-properties?property_type=domestic"
       end
 
       it "calls the use case with the correct arguments" do
@@ -168,6 +172,7 @@ describe "Acceptance::Login", type: :feature do
 
       context "when id token is valid" do
         before do
+          allow(Helper::Session).to receive(:get_session_value).and_call_original
           get callback_url, { code: "test_code", state: "test_state" }, { "rack.session" => { nonce: "test_nonce", state: "test_state", referer: "test-redirect-path" } }
         end
 
@@ -177,6 +182,7 @@ describe "Acceptance::Login", type: :feature do
 
         it "passes the validation and redirects" do
           expect(last_response.status).to eq(302)
+          expect(last_response.location).to include "/test-redirect-path?nocache="
         end
 
         it "calls the check_one_login_errors method" do
@@ -197,6 +203,20 @@ describe "Acceptance::Login", type: :feature do
 
         it "sets the user id into the session" do
           expect(Helper::Session).to have_received(:set_session_value).with(anything, :user_id, "e40c46c3-4636-4a8a-abd7-be72e1a525f6")
+        end
+
+        it "gets the referer from the session" do
+          expect(Helper::Session).to have_received(:get_session_value).with(anything, :referer)
+        end
+
+        context "when the referer has query parameters" do
+          before do
+            get callback_url, { code: "test_code", state: "test_state" }, { "rack.session" => { nonce: "test_nonce", state: "test_state", referer: "filter-properties%3Fproperty_type%3Ddomestic" } }
+          end
+
+          it "uses the query parameters in the redirect" do
+            expect(last_response.location).to include "/filter-properties?property_type=domestic&nocache="
+          end
         end
       end
 
@@ -289,12 +309,12 @@ describe "Acceptance::Login", type: :feature do
 
       context "when the referer session value is set to 'type-of-properties'" do
         before do
-          get callback_url, { code: "test_code", state: "test_state" }, { "rack.session" => { nonce: "test_nonce", state: "different_test_state", referer: "type-of-properties" } }
+          get callback_url, { code: "test_code", state: "test_state" }, { "rack.session" => { nonce: "test_nonce", state: "different_test_state", referer: "type-of-properties%3Fproperty_type%3Ddomestic" } }
         end
 
-        it "redirects to the OneLogin login page with the correct referer" do
+        it "redirects to the OneLogin login page with the correct referer including parameters" do
           expect(last_response.status).to eq(302)
-          expect(last_response.headers["Location"]).to eq("http://get-energy-performance-data/login/authorize?referer=type-of-properties")
+          expect(last_response.headers["Location"]).to eq("http://get-energy-performance-data/login/authorize?referer=type-of-properties%3Fproperty_type%3Ddomestic")
         end
       end
 

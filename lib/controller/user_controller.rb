@@ -63,11 +63,12 @@ module Controller
     end
 
     get "/login/callback" do
-      redirect_path = Helper::Session.get_session_value(session, :referer)
+      referer = Helper::Session.get_session_value(session, :referer)
       nonce = Helper::Session.get_session_value(session, :nonce)
 
-      raise Errors::AuthenticationError, "No referer found in session" if redirect_path.nil? || redirect_path.empty?
+      raise Errors::AuthenticationError, "No referer found in session" if referer.nil? || referer.empty?
 
+      redirect_path = CGI.unescape(referer)
       validate_one_login_callback
       token_response_hash = exchange_code_for_token(callback_path: request.path)
 
@@ -84,7 +85,8 @@ module Controller
         redirect_path = "opt-out/name"
       end
 
-      redirect "/#{redirect_path}?nocache=#{Time.now.to_i}"
+      query_union = redirect_path.include?("?") ? "&" : "?"
+      redirect "/#{redirect_path}#{query_union}nocache=#{Time.now.to_i}"
     rescue StandardError => e
       case e
       when Errors::StateMismatch, Errors::AccessDeniedError, Errors::LoginRequiredError, Errors::InvalidGrantError
@@ -95,7 +97,7 @@ module Controller
         error[:backtrace] = e.backtrace if e.methods.include? :backtrace
         @logger.error JSON.generate(error)
 
-        redirect_link = redirect_path == "opt-out" ? "/login?referer=opt-out" : "/login/authorize?referer=#{redirect_path}"
+        redirect_link = redirect_path == "opt-out" ? "/login?referer=opt-out" : "/login/authorize?referer=#{referer}"
 
         redirect localised_url(redirect_link)
       when Errors::TokenExchangeError, Errors::AuthenticationError, Errors::NetworkError, Errors::ValidationError

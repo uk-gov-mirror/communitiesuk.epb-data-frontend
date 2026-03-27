@@ -67,7 +67,7 @@ describe "Acceptance::FilterProperties", type: :feature do
 
       it "redirects to /login/authorize using status 303" do
         expect(response.status).to eq(303)
-        expect(response.location).to include "/login/authorize?referer=filter-properties"
+        expect(response.location).to include "/login/authorize?referer=filter-properties%3Fproperty_type%3Ddomestic"
       end
     end
   end
@@ -157,7 +157,7 @@ describe "Acceptance::FilterProperties", type: :feature do
 
         it "redirects to the login page" do
           expect(response.status).to eq(302)
-          expect(response.location).to eq("http://get-energy-performance-data/login/authorize?referer=filter-properties")
+          expect(response.location).to eq("http://get-energy-performance-data/login/authorize?referer=filter-properties%3Fproperty_type%3Ddomestic")
         end
       end
 

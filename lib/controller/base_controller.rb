@@ -54,7 +54,9 @@ module Controller
                   elsif request.path.start_with?("/download")
                     "/login/authorize?referer=type-of-properties"
                   else
-                    "/login/authorize?referer=#{request.path.delete_prefix('/')}"
+                    referrer = request.fullpath.delete_prefix("/")
+                    encoded_referrer = CGI.escape(referrer)
+                    "/login/authorize?referer=#{encoded_referrer}"
                   end
 
       redirect login_url, request.post? ? 303 : 302

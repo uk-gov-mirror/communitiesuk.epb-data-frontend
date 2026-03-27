@@ -102,7 +102,7 @@ describe "Acceptance::MyAccount", type: :feature do
 
       it "redirects to the OneLogin login page" do
         expect(response).to be_redirect
-        expect(response.location).to eq("http://get-energy-performance-data/login/authorize?referer=api/my-account")
+        expect(response.location).to eq("http://get-energy-performance-data/login/authorize?referer=api%2Fmy-account")
       end
     end
 
