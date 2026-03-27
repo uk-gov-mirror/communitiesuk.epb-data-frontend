@@ -130,6 +130,15 @@ describe "Acceptance::Login", type: :feature do
         expect(query_params["request"]).to eq("test_signed_request")
       end
 
+      it "the redirect includes the query string" do
+        uri = URI(last_response.headers["Location"])
+        query_params = Rack::Utils.parse_query(uri.query)
+        pp uri.query
+        expect(query_params["request"]).to eq("test_signed_request")
+      end
+
+
+
       it "does not return nil for nonce and state in session" do
         expect(last_request.session[:nonce]).not_to be_nil
         expect(last_request.session[:state]).not_to be_nil

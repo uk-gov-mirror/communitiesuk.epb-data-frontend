@@ -67,7 +67,7 @@ describe "Acceptance::FilterProperties", type: :feature do
 
       it "redirects to /login/authorize using status 303" do
         expect(response.status).to eq(303)
-        expect(response.location).to include "/login/authorize?referer=filter-properties"
+        expect(response.location).to include "/login/authorize?referer=filter-properties&property_type=domestic"
       end
     end
   end

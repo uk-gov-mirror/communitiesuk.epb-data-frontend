@@ -43,6 +43,7 @@ module Controller
     Helper::Assets.setup_cache_control(self)
 
     before do
+
       set_locale
       if is_restricted?
         Helper::Session.is_user_authenticated?(session)
@@ -54,7 +55,10 @@ module Controller
                   elsif request.path.start_with?("/download")
                     "/login/authorize?referer=type-of-properties"
                   else
-                    "/login/authorize?referer=#{request.path.delete_prefix('/')}"
+                    query_string = URI.encode_www_form(request.params)
+                    referrer= request.path.delete_prefix('/')
+                    referrer += "&#{query_string}" if query_string
+                    "/login/authorize?referer=#{referrer}"
                   end
 
       redirect login_url, request.post? ? 303 : 302
