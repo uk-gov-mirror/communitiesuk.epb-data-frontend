@@ -132,6 +132,9 @@ module Errors
   class NotifyServerError < RuntimeError
   end
 
+  class NotifyRateLimit < RuntimeError
+  end
+
   class KmsEncryptionError < RuntimeError
   end
 
@@ -139,6 +142,9 @@ module Errors
   end
 
   class SessionEmailError < RuntimeError
+  end
+
+  class SendEmailToUsersError < RuntimeError
   end
 
   module DoNotReport
