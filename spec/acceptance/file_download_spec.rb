@@ -31,9 +31,9 @@ describe "Acceptance::FileDownload", type: :feature do
     context "when user is not authenticated" do
       before { allow(Helper::Session).to receive(:is_user_authenticated?).and_raise(Errors::AuthenticationError, "User is not authenticated") }
 
-      it "redirects to the OneLogin login page with the type-of-properties referer" do
+      it "redirects to the OneLogin login page with the original download referer" do
         expect(response).to be_redirect
-        expect(response.location).to eq("http://get-energy-performance-data/login/authorize?referer=type-of-properties")
+        expect(response.location).to eq("http://get-energy-performance-data/login/authorize?referer=download%3Ffile%3Doutput%2F323eee63-6c56-4e77-9e36-7699f4cb240.csv")
       end
     end
 
@@ -108,9 +108,9 @@ describe "Acceptance::FileDownload", type: :feature do
     context "when user is not authenticated" do
       before { allow(Helper::Session).to receive(:is_user_authenticated?).and_raise(Errors::AuthenticationError, "User is not authenticated") }
 
-      it "redirects to the OneLogin login page with the type-of-properties referer" do
+      it "redirects to the OneLogin login page with the original download all referer" do
         expect(response).to be_redirect
-        expect(response.location).to eq("http://get-energy-performance-data/login/authorize?referer=type-of-properties")
+        expect(response.location).to eq("http://get-energy-performance-data/login/authorize?referer=download%2Fall%3Fproperty_type%3Ddomestic")
       end
     end
 

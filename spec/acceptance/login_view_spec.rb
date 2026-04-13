@@ -218,6 +218,26 @@ describe "Acceptance::Login", type: :feature do
             expect(last_response.location).to include "/filter-properties?property_type=domestic&nocache="
           end
         end
+
+        context "when the referer is a download with a file query parameter" do
+          before do
+            get callback_url, { code: "test_code", state: "test_state" }, { "rack.session" => { nonce: "test_nonce", state: "test_state", referer: "download?file=output/323eee63-6c56-4e77-9e36-7699f4cb240.csv" } }
+          end
+
+          it "redirects back to the download endpoint with the original file and nocache parameters" do
+            expect(last_response.location).to include "/download?file=output/323eee63-6c56-4e77-9e36-7699f4cb240.csv&nocache="
+          end
+        end
+
+        context "when the referer is download all with a property type query parameter" do
+          before do
+            get callback_url, { code: "test_code", state: "test_state" }, { "rack.session" => { nonce: "test_nonce", state: "test_state", referer: "download/all?property_type=domestic" } }
+          end
+
+          it "redirects back to the download all endpoint with the original query and nocache parameters" do
+            expect(last_response.location).to include "/download/all?property_type=domestic&nocache="
+          end
+        end
       end
 
       context "when id token is invalid" do
@@ -298,12 +318,12 @@ describe "Acceptance::Login", type: :feature do
 
       context "when the referer session value is set to 'api/my-account'" do
         before do
-          get callback_url, { code: "test_code", state: "test_state" }, { "rack.session" => { nonce: "test_nonce", state: "different_test_state", referer: "api/my-account" } }
+          get callback_url, { code: "test_code", state: "test_state" }, { "rack.session" => { nonce: "test_nonce", state: "different_test_state", referer: "api%2Fmy-account" } }
         end
 
         it "redirects to the OneLogin login page with the correct referer" do
           expect(last_response.status).to eq(302)
-          expect(last_response.headers["Location"]).to eq("http://get-energy-performance-data/login/authorize?referer=api/my-account")
+          expect(last_response.headers["Location"]).to eq("http://get-energy-performance-data/login/authorize?referer=api%2Fmy-account")
         end
       end
 
@@ -318,14 +338,25 @@ describe "Acceptance::Login", type: :feature do
         end
       end
 
-      context "when the referer session value is set to 'guidance/energy-certificate-data-apis'" do
+      context "when the referer session value is set to a 'download'" do
         before do
-          get callback_url, { code: "test_code", state: "test_state" }, { "rack.session" => { nonce: "test_nonce", state: "different_test_state", referer: "guidance/energy-certificate-data-apis" } }
+          get callback_url, { code: "test_code", state: "test_state" }, { "rack.session" => { nonce: "test_nonce", state: "different_test_state", referer: "download%3Ffile%3Doutput%2F323eee63-6c56-4e77-9e36-7699f4cb240.csv" } }
         end
 
         it "redirects to the OneLogin login page with the correct referer" do
           expect(last_response.status).to eq(302)
-          expect(last_response.headers["Location"]).to eq("http://get-energy-performance-data/login/authorize?referer=guidance/energy-certificate-data-apis")
+          expect(last_response.headers["Location"]).to eq("http://get-energy-performance-data/login/authorize?referer=download%3Ffile%3Doutput%2F323eee63-6c56-4e77-9e36-7699f4cb240.csv")
+        end
+      end
+
+      context "when the referer session value is set to 'guidance/energy-certificate-data-apis'" do
+        before do
+          get callback_url, { code: "test_code", state: "test_state" }, { "rack.session" => { nonce: "test_nonce", state: "different_test_state", referer: "guidance%2Fenergy-certificate-data-apis" } }
+        end
+
+        it "redirects to the OneLogin login page with the correct referer" do
+          expect(last_response.status).to eq(302)
+          expect(last_response.headers["Location"]).to eq("http://get-energy-performance-data/login/authorize?referer=guidance%2Fenergy-certificate-data-apis")
         end
       end
     end

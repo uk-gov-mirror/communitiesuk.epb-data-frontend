@@ -51,8 +51,6 @@ module Controller
     rescue Errors::AuthenticationError
       login_url = if request.path.start_with?("/opt-out")
                     "/login?referer=opt-out"
-                  elsif request.path.start_with?("/download")
-                    "/login/authorize?referer=type-of-properties"
                   else
                     referrer = request.fullpath.delete_prefix("/")
                     encoded_referrer = CGI.escape(referrer)
