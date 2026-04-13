@@ -102,7 +102,7 @@ module Gateway
       )
       emails = []
       users.items.each do |item|
-        emails <<  @kms_gateway.decrypt(item["EmailAddress"]) unless item["EmailAddress"].nil?
+        emails << @kms_gateway.decrypt(item["EmailAddress"]) unless item["EmailAddress"].nil?
       rescue Errors::KmsDecryptionError
         next
       end

@@ -635,7 +635,6 @@ describe Gateway::UserCredentialsGateway do
         }.to_json
       end
 
-
       before do
         stub_request(:post, "https://dynamodb.eu-west-2.amazonaws.com/")
           .with(
@@ -643,14 +642,13 @@ describe Gateway::UserCredentialsGateway do
               "Host" => "dynamodb.eu-west-2.amazonaws.com",
               "X-Amz-Target" => "DynamoDB_20120810.Scan",
             },
-            )
+          )
           .to_return(status: 200, body: query_response, headers: {})
       end
 
       it "returns the emails" do
         expect(gateway.get_opt_in_users).to eq %w[test@email.com name.test@email.com]
       end
-
     end
   end
 end
