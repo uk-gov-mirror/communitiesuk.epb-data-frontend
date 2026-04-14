@@ -34,21 +34,6 @@ describe UseCase::SendEmailToUsers do
       end
     end
 
-    context "when one of the emails raises an decrypt error" do
-      let(:bad_email) do
-        "bad.email@test.com"
-      end
-
-      before do
-        emails.insert(1, bad_email)
-        allow(notify_gateway).to receive(:send_email).with(template_id: template_id, email_address: bad_email).and_raise(Errors::NotifySendEmailError)
-      end
-
-      it "skips over the error and sends emails to the rest" do
-        expect(notify_gateway).to have_received(:send_email).exactly(2).times
-      end
-    end
-
     context "when sending one of the emails raises an decrypt error" do
       let(:bad_email) do
         "bad.email@test.com"
