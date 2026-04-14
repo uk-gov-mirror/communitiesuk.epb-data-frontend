@@ -82,7 +82,7 @@ To run the respective test suites:
 1. To run the test stubs server (i.e. the frontend in isolation from the local API),
    change directory into the root of the cloned folder: `$ cd epb-data-frontend`
 2. Start the web server(s) using the following command: `$ make run ARGS=config_test.ru`
-3. Open <http://get-energy-performance-data.epb-frontend:9292> in your favourite browser to
+3. Open <http://get-energy-performance-data.epb-frontend:9393> in your favourite browser to
    run the test server with htpp.
 
 #### The integrated server
