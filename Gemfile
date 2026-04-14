@@ -21,9 +21,6 @@ group :test do
   gem "webmock", "~> 3.23"
 end
 
-group :rake do
-  gem "activerecord", "~> 8.1.2"
-end
 
 gem "aws-sdk-dynamodb", "~> 1.144"
 gem "aws-sdk-kms", "~> 1"
