@@ -1,3 +1,4 @@
 User-agent: *
-Allow: /data-access-options
+Allow: /$
+Allow: /opt-out
 Disallow: /

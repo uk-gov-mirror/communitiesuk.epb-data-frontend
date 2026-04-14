@@ -21,8 +21,8 @@ describe "Acceptance::Layout", type: :feature do
         expect(response.body).to have_link "Get energy performance of buildings data"
       end
 
-      it "does not allow indexing or following by crawlers" do
-        expect(response.body).to include('<meta name="robots" content="noindex, nofollow">')
+      it "does allows indexing but not following by crawlers" do
+        expect(response.body).to include('<meta name="robots" content="nofollow">')
       end
 
       it "does not display the sign out button" do
@@ -109,6 +109,10 @@ describe "Acceptance::Layout", type: :feature do
 
         it "does not show 'gov header' banner text" do
           expect(response.body).not_to have_link "Get energy performance of buildings data"
+        end
+
+        it "does not allow indexing or following by crawlers" do
+          expect(response.body).to include('<meta name="robots" content="noindex, nofollow">')
         end
       end
     end

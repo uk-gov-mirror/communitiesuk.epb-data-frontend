@@ -27,6 +27,7 @@ module Controller
 
     get "/" do
       status 200
+      @allow_indexing = true
       erb :start_page
     end
 
