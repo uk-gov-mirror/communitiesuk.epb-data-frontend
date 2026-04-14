@@ -38,7 +38,7 @@ describe "Sending emails to users" do
       allow(notify_gateway).to receive(:send_email)
       allow(stub_users).to receive(:get_opt_in_users).and_return(test_user_emails.split(","))
       allow(user_credentials_gateway).to receive(:get_opt_in_users).and_return(test_user_emails.split(","))
-      ENV["NOTIFY_EMAIL_USERS_TEMPLATE_ID"] = "some_template_id"
+      ENV["NOTIFY_DATA_EMAIL_USERS_TEMPLATE_ID"] = "some_template_id"
     end
 
     after do
