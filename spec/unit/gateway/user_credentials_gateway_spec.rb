@@ -61,12 +61,19 @@ describe Gateway::UserCredentialsGateway do
         )
         allow(kms_gateway).to receive(:encrypt).with(email).and_return(encrypted_email)
 
-        WebMock.stub_request(:post, "https://dynamodb.eu-west-2.amazonaws.com")
-          .with(body: expected_put_item_body,
-                headers: {
-                  "X-Amz-Target" => "DynamoDB_20120810.PutItem",
-                })
-          .to_return(status: 200, body: "{}")
+        stub_request(:post, "https://dynamodb.eu-west-2.amazonaws.com/")
+          .with(
+            body: "{\"Item\":{\"UserId\":{\"S\":\"e40c46c3-4636-4a8a-abd7-be72e1a525f6\"},\"CreatedAt\":{\"S\":\"2025-06-25 13:32:00 +0100\"},\"BearerToken\":{\"S\":\"D0RnC2oKGsoM936wKmtd4ZcoSw489rPo4FDqQ2SYQVtVnQ4PhZ33b46YZPNZXo6r\"},\"OneLoginSub\":{\"S\":\"mock-sub-id\"},\"EmailAddress\":{\"S\":\"encrypted-email\"},\"OptOut\":{\"BOOL\":false}},\"TableName\":\"test_users_table\"}",
+            headers: {
+              "Amz-Sdk-Invocation-Id" => "e40c46c3-4636-4a8a-abd7-be72e1a525f6",
+              "Authorization" => "AWS4-HMAC-SHA256 Credential=fake_access_key_id/20250625/eu-west-2/dynamodb/aws4_request, SignedHeaders=amz-sdk-invocation-id;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-target, Signature=292be3c747fb7e2aef906af59b7e490622df3ce4823510ed36560c738fc068fa",
+              "Content-Length" => "325",
+              "Host" => "dynamodb.eu-west-2.amazonaws.com",
+
+              "X-Amz-Target" => "DynamoDB_20120810.PutItem",
+            },
+          )
+          .to_return(status: 200, body: "", headers: {})
       end
 
       after do
