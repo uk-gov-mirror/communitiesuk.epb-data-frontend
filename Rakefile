@@ -1,6 +1,4 @@
 require "sinatra"
-require "active_support"
-require "active_support/core_ext"
 
 configure { set :server, :puma }
 
