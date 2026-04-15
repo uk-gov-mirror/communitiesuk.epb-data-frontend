@@ -16,3 +16,8 @@ task :send_email_to_users do
 
   UseCase::SendEmailToUsers.new(user_credentials_gateway:, notify_gateway:).execute(template_id)
 end
+
+
+task :test_task do
+
+end
