@@ -93,6 +93,12 @@ module Gateway
       )
     end
 
+    def delete_user(user_id)
+      @table.delete_item(
+        key: { "UserId" => user_id },
+      )
+    end
+
     def get_opt_in_users
       users = @table.scan(
         filter_expression: "OptOut = :o",

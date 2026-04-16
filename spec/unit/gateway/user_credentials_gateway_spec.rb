@@ -24,6 +24,8 @@ describe Gateway::UserCredentialsGateway do
     "test@email.com"
   end
 
+  let(:table_name) { ENV["EPB_DATA_USER_CREDENTIAL_TABLE_NAME"] }
+
   describe "#insert_user" do
     context "when inserting a new user" do
       let(:encrypted_email) { "encrypted-email" }
@@ -126,7 +128,7 @@ describe Gateway::UserCredentialsGateway do
             "EmailAddress" => { "S" => encrypted_email },
             "OptOut" => { "BOOL": false },
           },
-          "TableName" => ENV["EPB_DATA_USER_CREDENTIAL_TABLE_NAME"] || "test_users_table",
+          "TableName" => table_name,
         }.to_json
 
         gateway.update_user_email(user_id:, email:)
@@ -175,7 +177,7 @@ describe Gateway::UserCredentialsGateway do
             "EmailAddress" => { "S" => encrypted_email },
             "OptOut" => { "BOOL": false },
           },
-          "TableName" => ENV["EPB_DATA_USER_CREDENTIAL_TABLE_NAME"] || "test_users_table",
+          "TableName" => table_name,
         }.to_json
 
         gateway.update_user_email(user_id:, email:)
@@ -454,7 +456,7 @@ describe Gateway::UserCredentialsGateway do
             "EmailAddress" => { "S" => "encrypted_email" },
             "OptOut" => { "BOOL": false },
           },
-          "TableName" => ENV["EPB_DATA_USER_CREDENTIAL_TABLE_NAME"] || "test_users_table",
+          "TableName" => table_name,
         }.to_json
       end
 
@@ -492,7 +494,7 @@ describe Gateway::UserCredentialsGateway do
             "EmailAddress" => { "S" => "encrypted_email" },
             "OptOut" => { "BOOL": true },
           },
-          "TableName" => ENV["EPB_DATA_USER_CREDENTIAL_TABLE_NAME"] || "test_users_table",
+          "TableName" => table_name,
         }.to_json
       end
 
@@ -504,6 +506,32 @@ describe Gateway::UserCredentialsGateway do
                                headers: { "X-Amz-Target" => "DynamoDB_20120810.PutItem" },
                              )
       end
+    end
+  end
+
+  describe "#delete_user" do
+    let(:expected_delete_body) do
+      {
+        "Key" => {
+          "UserId" => { "S" => user_id },
+        },
+        "TableName" => table_name,
+      }.to_json
+    end
+
+    before do
+      WebMock.stub_request(:post, "https://dynamodb.eu-west-2.amazonaws.com/")
+             .with(body: expected_delete_body,
+                   headers: { "X-Amz-Target" => "DynamoDB_20120810.DeleteItem" })
+             .to_return(status: 200, body: "{}", headers: {})
+    end
+
+    it "deletes the user from the credentials table" do
+      gateway.delete_user(user_id)
+
+      expect(WebMock).to have_requested(:post, "https://dynamodb.eu-west-2.amazonaws.com/")
+                           .with(body: expected_delete_body,
+                                 headers: { "X-Amz-Target" => "DynamoDB_20120810.DeleteItem" })
     end
   end
 
