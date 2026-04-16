@@ -27,10 +27,11 @@ module Gateway
       raise Errors::NotifyServerError
     end
 
-    def send_email(template_id:, email_address:)
+    def send_email(template_id:, email_address:, service_domain:)
       response = @client.send_email(
         email_address:,
         template_id:,
+        unsubscribe_link: "https://#{service_domain}/api/my-account/toggle-email-notifications",
       )
       response.id
     rescue Notifications::Client::BadRequestError, Notifications::Client::AuthError => e

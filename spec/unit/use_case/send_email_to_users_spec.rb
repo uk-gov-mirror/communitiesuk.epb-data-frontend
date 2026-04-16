@@ -9,6 +9,8 @@ describe UseCase::SendEmailToUsers do
 
   let(:template_id) { "template_id" }
 
+  let(:service_domain) { "get-energy-performance-data.epb-frontend" }
+
   let(:use_case) do
     described_class.new(user_credentials_gateway:, notify_gateway:)
   end
@@ -21,7 +23,7 @@ describe UseCase::SendEmailToUsers do
     before do
       allow(user_credentials_gateway).to receive(:get_opt_in_users).and_return emails
       allow(notify_gateway).to receive(:send_email)
-      use_case.execute(template_id)
+      use_case.execute(template_id, service_domain)
     end
 
     it "extracts the decrypted emails addresses" do
@@ -30,7 +32,7 @@ describe UseCase::SendEmailToUsers do
 
     it "sends message to notify for each user" do
       emails.each do |email|
-        expect(notify_gateway).to have_received(:send_email).with(template_id:, email_address: email).exactly(1).times
+        expect(notify_gateway).to have_received(:send_email).with(template_id:, email_address: email, service_domain:).exactly(1).times
       end
     end
 
@@ -41,7 +43,7 @@ describe UseCase::SendEmailToUsers do
 
       before do
         emails.insert(1, bad_email)
-        allow(notify_gateway).to receive(:send_email).with(template_id: template_id, email_address: bad_email).and_raise(Errors::NotifySendEmailError)
+        allow(notify_gateway).to receive(:send_email).with(template_id: template_id, email_address: bad_email, service_domain:).and_raise(Errors::NotifySendEmailError)
       end
 
       it "skips over the error and sends emails to the rest" do
@@ -55,7 +57,7 @@ describe UseCase::SendEmailToUsers do
       end
 
       it "the error is bubbled up to the use case" do
-        expect { use_case.execute(template_id) }.to raise_error(Errors::NotifyRateLimit)
+        expect { use_case.execute(template_id, service_domain) }.to raise_error(Errors::NotifyRateLimit)
       end
     end
   end

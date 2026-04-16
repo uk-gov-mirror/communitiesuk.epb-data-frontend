@@ -3,8 +3,9 @@ task :send_email_to_users do
   production_send = ENV["PRODUCTION_SEND"] || false
   test_users = ENV["TEST_USERS"]
   template_id = ENV["NOTIFY_DATA_EMAIL_USERS_TEMPLATE_ID"]
+  service_domain = ENV["SERVICE_DOMAIN"]
 
-  if !production_send & test_users.nil?
+  if !production_send && test_users.nil?
     raise Errors::SendEmailToUsersError, "ENV variable PRODUCTION_SEND ENV must set as true"
   end
 
@@ -14,5 +15,5 @@ task :send_email_to_users do
 
   notify_gateway = Gateway::NotifyGateway.new(notify_client)
 
-  UseCase::SendEmailToUsers.new(user_credentials_gateway:, notify_gateway:).execute(template_id)
+  UseCase::SendEmailToUsers.new(user_credentials_gateway:, notify_gateway:).execute(template_id, service_domain)
 end

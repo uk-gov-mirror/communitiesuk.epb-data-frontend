@@ -5,10 +5,10 @@ module UseCase
       @notify_gateway = notify_gateway
     end
 
-    def execute(notify_template_id)
+    def execute(notify_template_id, service_domain)
       emails = @user_credentials_gateway.get_opt_in_users
       emails.each do |email|
-        @notify_gateway.send_email(template_id: notify_template_id, email_address: email)
+        @notify_gateway.send_email(template_id: notify_template_id, email_address: email, service_domain:)
       end
     end
   end

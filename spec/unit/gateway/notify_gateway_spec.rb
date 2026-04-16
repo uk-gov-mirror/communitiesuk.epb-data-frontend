@@ -9,6 +9,10 @@ describe Gateway::NotifyGateway do
     "f5d03031-b559-4264-8503-802ee0e78f4c"
   end
 
+  let(:service_domain) do
+    "get-energy-performance-data.epb-frontend"
+  end
+
   let(:email_address) { "sender@something.com" }
   let(:personalisation) do
     {
@@ -133,16 +137,16 @@ describe Gateway::NotifyGateway do
   describe "#send_email" do
     context "when Notification service responds successfully with 200" do
       it "returns the response id" do
-        expect(gateway.send_email(template_id:, email_address:)).to eq("201b576e-c09b-467b-9dfa-9c3b689ee730")
+        expect(gateway.send_email(template_id:, email_address:, service_domain:)).to eq("201b576e-c09b-467b-9dfa-9c3b689ee730")
       end
 
       it "a message is sent to the nofiy api" do
-        gateway.send_email(template_id:, email_address:)
+        gateway.send_email(template_id:, email_address:, service_domain:)
         expect(WebMock).to have_requested(
           :post,
           "https://api.notifications.service.gov.uk/v2/notifications/email",
         ).with(
-          body: '{"email_address":"sender@something.com","template_id":"f5d03031-b559-4264-8503-802ee0e78f4c"}',
+          body: '{"email_address":"sender@something.com","template_id":"f5d03031-b559-4264-8503-802ee0e78f4c","unsubscribe_link":"https://get-energy-performance-data.epb-frontend/api/my-account/toggle-email-notifications"}',
         )
       end
     end
@@ -154,7 +158,7 @@ describe Gateway::NotifyGateway do
       end
 
       it "re-raises the rate limit error" do
-        expect { gateway.send_email(template_id:, email_address:) }.to raise_error Errors::NotifyRateLimit
+        expect { gateway.send_email(template_id:, email_address:, service_domain:) }.to raise_error Errors::NotifyRateLimit
       end
     end
   end

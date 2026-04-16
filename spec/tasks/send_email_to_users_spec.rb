@@ -8,6 +8,10 @@ describe "Sending emails to users" do
       "dave@test.com, jo@test.com"
     end
 
+    let(:service_domain) do
+      "get-energy-performance-data.epb-frontend"
+    end
+
     let(:notify_client) do
       instance_double(Notifications::Client)
     end
@@ -39,10 +43,12 @@ describe "Sending emails to users" do
       allow(stub_users).to receive(:get_opt_in_users).and_return(test_user_emails.split(","))
       allow(user_credentials_gateway).to receive(:get_opt_in_users).and_return(test_user_emails.split(","))
       ENV["NOTIFY_DATA_EMAIL_USERS_TEMPLATE_ID"] = "some_template_id"
+      ENV["SERVICE_DOMAIN"] = service_domain
     end
 
     after do
       ENV.delete("NOTIFY_EMAIL_USERS_TEMPLATE_ID")
+      ENV.delete("SERVICE_DOMAIN")
     end
 
     context "when sending messages to emails passed as an ENV variable" do
@@ -65,7 +71,7 @@ describe "Sending emails to users" do
 
       it "sends emails to stubbed users" do
         test_user_emails.split(",").each do |email|
-          expect(notify_gateway).to have_received(:send_email).with({ email_address: email, template_id: "some_template_id" }).exactly(1).times
+          expect(notify_gateway).to have_received(:send_email).with({ email_address: email, template_id: "some_template_id", service_domain: service_domain }).exactly(1).times
         end
       end
     end
@@ -86,7 +92,7 @@ describe "Sending emails to users" do
 
       it "sends emails users" do
         test_user_emails.split(",").each do |email|
-          expect(notify_gateway).to have_received(:send_email).with({ email_address: email, template_id: "some_template_id" }).exactly(1).times
+          expect(notify_gateway).to have_received(:send_email).with({ email_address: email, template_id: "some_template_id", service_domain: service_domain }).exactly(1).times
         end
       end
     end
