@@ -1,5 +1,7 @@
 module Controller
   class FilterPropertiesController < Controller::BaseController
+    include Helper::ReferrerCheck
+
     filter_properties =
       lambda do
         @errors = {}
@@ -69,7 +71,7 @@ module Controller
          &filter_properties
 
     get "/request-received-confirmation" do
-      check_referral
+      check_referral("/filter-properties")
       @page_title = "#{t('request_received.title')} – #{t('layout.body.govuk')}"
 
       email = Helper::Session.get_email_from_session(session)
@@ -101,24 +103,6 @@ module Controller
     end
 
   private
-
-    def check_referral
-      referrer_url = request.referrer
-      access_forbidden unless referrer_url
-
-      uri = URI(referrer_url)
-
-      same_origin = uri.scheme == request.scheme &&
-        uri.host == request.host &&
-        uri.port == request.port
-
-      access_forbidden unless same_origin && uri.path == "/filter-properties"
-    end
-
-    def access_forbidden
-      logger.warn "Invalid referrer detected. Access Forbidden"
-      halt 403, erb(:error_page_403)
-    end
 
     def get_download_size(params_data, property_type:)
       use_case = @container.get_object(:get_download_size_use_case)
