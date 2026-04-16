@@ -8,7 +8,7 @@ require_relative "../helper/toggles"
 
 module Controller
   class BaseController < Sinatra::Base
-    RESTRICTED_PATHS = %w[/type-of-properties /api/my-account /filter-properties /download /download/all /opt-out/name /opt-out/check-your-answers /opt-out/received /opt-out/certificate-details].freeze
+    RESTRICTED_PATHS = %w[/type-of-properties /api/my-account /api/my-account/delete-account /filter-properties /download /download/all /opt-out/name /opt-out/check-your-answers /opt-out/received /opt-out/certificate-details].freeze
     VALID_PROPERTY_TYPES = %w[domestic non-domestic display].freeze
 
     helpers Helpers

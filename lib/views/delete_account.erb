@@ -1,0 +1,32 @@
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <div>
+      <h1 class="govuk-heading-xl"><%= t('delete_account.title') %></h1>
+    </div>
+    <div>
+      <p class="govuk-body">
+        <%= t('delete_account.body')[0] %>
+      </p>
+
+      <p class="govuk-body">
+        <%= t('delete_account.body')[1] %>
+      </p>
+
+      <p class="govuk-body">
+        <%= t('delete_account.body')[2] %>
+      </p>
+
+      <ul class="govuk-list govuk-list--bullet">
+        <li><%= t('delete_account.consequences')[0] %></li>
+        <li><%= t('delete_account.consequences')[1] %></li>
+        <li><%= t('delete_account.consequences')[2] %></li>
+      </ul>
+
+      <form action="/api/my-account/delete-account" method="post">
+        <%= erb :component__csrf_tag %>
+        <button class="govuk-button govuk-button--warning govuk-!-margin-right-2" id="confirm-delete-account"><%= t('delete_account.button') %></button>
+        <a class="govuk-button govuk-button--secondary" href="/api/my-account"><%= t('delete_account.cancel') %></a>
+      </form>
+    </div>
+  </div>
+</div>

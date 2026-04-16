@@ -48,7 +48,7 @@ describe "Acceptance::MyAccount", type: :feature do
       end
 
       it "has the correct page header" do
-        expect(response.body).to have_css("h1", text: "My account")
+        expect(response.body).to have_css("h1.govuk-heading-xl", text: "My account")
       end
 
       it "displays the title the same as the main header value" do
@@ -86,6 +86,20 @@ describe "Acceptance::MyAccount", type: :feature do
 
       it "shows the opt out toggle link" do
         expect(response.body).to have_link("Opt-out", href: "/api/my-account/toggle-email-notifications", id: "opt-out-toggle-link")
+      end
+
+      it "shows the delete your account section" do
+        expect(response.body).to have_css("h2.govuk-heading-l", text: "Delete your account")
+      end
+
+      it "shows the delete your account section content" do
+        expect(response.body).to include("Deleting your account removes your data from this service.")
+        expect(response.body).to include("You will no longer be able to use the service or API, and you will stop receiving email updates.")
+        expect(response.body).to include("You cannot undo this action.")
+      end
+
+      it "shows the delete account button" do
+        expect(response.body).to have_link("Delete account", href: "/api/my-account/delete-account")
       end
 
       it "redirects to /login/authorize when the bearer token is missing" do

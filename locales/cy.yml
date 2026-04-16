@@ -256,7 +256,27 @@ cy:
     opt_out_enable: "Opt-in"
     opt_out_disable: "Opt-out"
     email_notifications: "Email notifications"
+    delete_account:
+      header: "Delete your account"
+      body:
+        - "Deleting your account removes your data from this service."
+        - "You will no longer be able to use the service or API, and you will stop receiving email updates."
+        - "You cannot undo this action."
+      button: "Delete account"
 
+  delete_account:
+    title: "Delete your account"
+    body:
+      - "This will permanently delete the account information stored by this service. This includes your email address and any saved preferences."
+      - "This will not delete your GOV.UK One Login account. To delete your One Login account, <a href=\"https://www.gov.uk/guidance/deleting-your-govuk-one-login\">follow the GOV.UK One Login guidance</a>"
+      - "If you delete your account, you will:"
+    consequences:
+      - "stop receiving email updates"
+      - "need to create a new account to use the service again"
+      - "lose access to the API (any existing API tokens will stop working)"
+    button: "Delete account"
+    cancel: "Cancel"
+    account_deleted: "Your account has been deleted."
 
   guidance:
     title: "Guidance"
