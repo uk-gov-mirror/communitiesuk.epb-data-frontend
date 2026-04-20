@@ -243,7 +243,7 @@ describe "Acceptance::Login", type: :feature do
       context "when id token is invalid" do
         before do
           allow(validate_id_token_use_case).to receive(:execute).and_return(false)
-          get callback_url, { code: "test_code", state: "test_state" }, { "rack.session" => { nonce: "test_nonce", state: "test_state" } }
+          get callback_url, { code: "test_code", state: "test_state" }, { "rack.session" => { nonce: "test_nonce", state: "test_state", referer: "not_empty" } }
         end
 
         it "raises 500" do
@@ -300,6 +300,17 @@ describe "Acceptance::Login", type: :feature do
           redirect_uri = URI(last_response.location)
           expect(redirect_uri.path).to eq("/guidance/energy-certificate-data-apis")
           expect(redirect_uri.query).to eq("nocache=1750852800")
+        end
+      end
+
+      context "when the referer session data is missing" do
+        before do
+          get callback_url, { code: "test_code", state: "test_state" }, { "rack.session" => { nonce: "test_nonce", state: "test_state" } }
+        end
+
+        it "redirects to the home page" do
+          redirect_uri = URI(last_response.location)
+          expect(redirect_uri.path).to eq("/")
         end
       end
     end
@@ -368,16 +379,6 @@ describe "Acceptance::Login", type: :feature do
       end
 
       it "raises 500 error" do
-        expect(last_response.status).to eq(500)
-      end
-    end
-
-    context "when the redirect_path is missing in session" do
-      before do
-        get callback_url, { code: "test_code", state: "test_state" }, { "rack.session" => { nonce: "test_nonce", state: "test_state" } }
-      end
-
-      it "raises an authentication error" do
         expect(last_response.status).to eq(500)
       end
     end

@@ -66,7 +66,7 @@ module Controller
       referer = Helper::Session.get_session_value(session, :referer)
       nonce = Helper::Session.get_session_value(session, :nonce)
 
-      raise Errors::AuthenticationError, "No referer found in session" if referer.nil? || referer.empty?
+      raise Errors::MissingReferrerError, "No referer found in session" if referer.nil? || referer.empty?
 
       redirect_path = CGI.unescape(referer)
       validate_one_login_callback
@@ -89,6 +89,7 @@ module Controller
       redirect "/#{redirect_path}#{query_union}nocache=#{Time.now.to_i}"
     rescue StandardError => e
       case e
+
       when Errors::StateMismatch, Errors::AccessDeniedError, Errors::LoginRequiredError, Errors::InvalidGrantError
         message =
           e.methods.include?(:message) ? e.message : e
@@ -103,6 +104,9 @@ module Controller
       when Errors::TokenExchangeError, Errors::AuthenticationError, Errors::NetworkError, Errors::ValidationError
         @logger.warn "Authentication error: #{e.message}"
         server_error(e)
+      when Errors::MissingReferrerError
+        @logger.error "Missing referer in session during login callback: #{e.message}"
+        redirect "/"
       else
         @logger.error "Unexpected error during login callback: #{e.message}"
         server_error(e)

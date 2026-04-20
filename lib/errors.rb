@@ -147,6 +147,9 @@ module Errors
   class SendEmailToUsersError < RuntimeError
   end
 
+  class MissingReferrerError < RuntimeError
+  end
+
   module DoNotReport
   end
 end
