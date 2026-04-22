@@ -111,9 +111,6 @@ module Errors
   class NetworkError < ApiError
   end
 
-  class MultipleUsersWithSameSubError < ApiError
-  end
-
   class BearerTokenMissing < RuntimeError
   end
 

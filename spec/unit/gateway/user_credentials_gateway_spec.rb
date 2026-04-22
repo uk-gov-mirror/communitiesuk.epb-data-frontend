@@ -264,6 +264,112 @@ describe Gateway::UserCredentialsGateway do
         expect(gateway.get_user("missing-sub-id")).to be_nil
       end
     end
+
+    context "when getting an existing user and the results are paginated" do
+      let(:first_page_query_body) do
+        {
+          "FilterExpression": "OneLoginSub = :sub",
+          "ExpressionAttributeValues": {
+            ":sub": { "S": sub_id },
+          },
+          "TableName": "test_users_table",
+        }.to_json
+      end
+
+      let(:second_page_query_body) do
+        {
+          "FilterExpression": "OneLoginSub = :sub",
+          "ExpressionAttributeValues": {
+            ":sub": { "S": sub_id },
+          },
+          "ExclusiveStartKey": { "UserId": { "S": "some-other-user-id" } },
+          "TableName": "test_users_table",
+        }.to_json
+      end
+
+      let(:first_page_response) do
+        {
+          "Items" => [],
+          "Count" => 0,
+          "LastEvaluatedKey" => { "UserId" => { "S" => "some-other-user-id" } },
+        }.to_json
+      end
+
+      let(:second_page_response) do
+        {
+          "Items" => [
+            {
+              "UserId" => { "S" => user_id },
+              "OneLoginSub" => { "S" => sub_id },
+              "CreatedAt" => { "S" => Time.now.to_s },
+              "BearerToken" => { "S" => "the-bearer-token" },
+            },
+          ],
+          "Count" => 1,
+        }.to_json
+      end
+
+      before do
+        WebMock.stub_request(:post, "https://dynamodb.eu-west-2.amazonaws.com")
+               .with(body: first_page_query_body,
+                     headers: { "X-Amz-Target" => "DynamoDB_20120810.Scan" })
+               .to_return(status: 200, body: first_page_response)
+
+        WebMock.stub_request(:post, "https://dynamodb.eu-west-2.amazonaws.com")
+               .with(body: second_page_query_body,
+                     headers: { "X-Amz-Target" => "DynamoDB_20120810.Scan" })
+               .to_return(status: 200, body: second_page_response)
+      end
+
+      it "returns the UserId from the second page" do
+        expect(gateway.get_user(sub_id)).to eq(user_id)
+      end
+    end
+
+    context "when the OneLoginSub is in multiple results" do
+      let(:expected_query_body) do
+        {
+          "FilterExpression": "OneLoginSub = :sub",
+          "ExpressionAttributeValues": {
+            ":sub": { "S": sub_id },
+          },
+          "TableName": "test_users_table",
+        }.to_json
+      end
+
+      let(:query_response) do
+        {
+          "Items" => [
+            {
+              "UserId" => { "S" => user_id },
+              "OneLoginSub" => { "S" => sub_id },
+              "CreatedAt" => { "S" => Time.now.to_s },
+              "BearerToken" => { "S" => "the-bearer-token" },
+            },
+            {
+              "UserId" => { "S" => "another-user-id" },
+              "OneLoginSub" => { "S" => sub_id },
+              "CreatedAt" => { "S" => Time.now.to_s },
+              "BearerToken" => { "S" => "another-bearer-token" },
+            },
+          ],
+          "Count" => 2,
+        }.to_json
+      end
+
+      before do
+        WebMock.stub_request(:post, "https://dynamodb.eu-west-2.amazonaws.com")
+               .with(body: expected_query_body,
+                     headers: {
+                       "X-Amz-Target" => "DynamoDB_20120810.Scan",
+                     })
+               .to_return(status: 200, body: query_response)
+      end
+
+      it "returns the first UserId" do
+        expect(gateway.get_user(sub_id)).to eq(user_id)
+      end
+    end
   end
 
   describe "#get_user_token" do
@@ -532,151 +638,6 @@ describe Gateway::UserCredentialsGateway do
       expect(WebMock).to have_requested(:post, "https://dynamodb.eu-west-2.amazonaws.com/")
                            .with(body: expected_delete_body,
                                  headers: { "X-Amz-Target" => "DynamoDB_20120810.DeleteItem" })
-    end
-  end
-
-  describe "#get_opt_in_users" do
-    let(:query_response) do
-      {
-        "Items" => [
-          {
-            "UserId" => { "S" => user_id },
-            "OneLoginSub" => { "S" => sub_id },
-            "CreatedAt" => { "S" => Time.now.to_s },
-            "EmailAddress" => { "S" => "encrypted_email_1" },
-            "OptOut" => { "BOOL" => false },
-            "BearerToken" => { "S" => "the-bearer-token" },
-          },
-          {
-            "UserId" => { "S" => user_id },
-            "OneLoginSub" => { "S" => sub_id },
-            "CreatedAt" => { "S" => Time.now.to_s },
-            "EmailAddress" => { "S" => "encrypted_email_2" },
-            "OptOut" => { "BOOL" => false },
-            "BearerToken" => { "S" => "the-bearer-token" },
-          },
-        ],
-        "Count" => 2,
-      }.to_json
-    end
-
-    before do
-      stub_request(:post, "https://dynamodb.eu-west-2.amazonaws.com/")
-        .with(
-          headers: {
-            "Host" => "dynamodb.eu-west-2.amazonaws.com",
-            "X-Amz-Target" => "DynamoDB_20120810.Scan",
-          },
-        )
-        .to_return(status: 200, body: query_response, headers: {})
-      allow(kms_gateway).to receive(:decrypt).with("encrypted_email_1").and_return("test@email.com")
-      allow(kms_gateway).to receive(:decrypt).with("encrypted_email_2").and_return("name.test@email.com")
-    end
-
-    it "returns data for user who have not opted out" do
-      expect(gateway.get_opt_in_users).to eq %w[test@email.com name.test@email.com]
-    end
-
-    context "when a email cannot be decrypted" do
-      let(:query_response) do
-        {
-          "Items" => [
-            {
-              "UserId" => { "S" => user_id },
-              "OneLoginSub" => { "S" => sub_id },
-              "CreatedAt" => { "S" => Time.now.to_s },
-              "EmailAddress" => { "S" => "encrypted_email_1" },
-              "OptOut" => { "BOOL" => false },
-              "BearerToken" => { "S" => "the-bearer-token" },
-            },
-            {
-              "UserId" => { "S" => user_id },
-              "OneLoginSub" => { "S" => sub_id },
-              "CreatedAt" => { "S" => Time.now.to_s },
-              "EmailAddress" => { "S" => "bad_data" },
-              "OptOut" => { "BOOL" => false },
-              "BearerToken" => { "S" => "the-bearer-token" },
-            },
-
-            {
-              "UserId" => { "S" => user_id },
-              "OneLoginSub" => { "S" => sub_id },
-              "CreatedAt" => { "S" => Time.now.to_s },
-              "EmailAddress" => { "S" => "encrypted_email_2" },
-              "OptOut" => { "BOOL" => false },
-              "BearerToken" => { "S" => "the-bearer-token" },
-            },
-          ],
-          "Count" => 1,
-        }.to_json
-      end
-
-      before do
-        stub_request(:post, "https://dynamodb.eu-west-2.amazonaws.com/")
-          .with(
-            headers: {
-              "Host" => "dynamodb.eu-west-2.amazonaws.com",
-              "X-Amz-Target" => "DynamoDB_20120810.Scan",
-            },
-          )
-          .to_return(status: 200, body: query_response, headers: {})
-        allow(kms_gateway).to receive(:decrypt).with("encrypted_email_1").and_return("test@email.com")
-        allow(kms_gateway).to receive(:decrypt).with("encrypted_email_2").and_return("name.test@email.com")
-
-        allow(kms_gateway).to receive(:decrypt).with("bad_data").and_raise Errors::KmsDecryptionError
-      end
-
-      it "returns the 2 emails that have been decrypted" do
-        expect(gateway.get_opt_in_users).to eq %w[test@email.com name.test@email.com]
-      end
-    end
-
-    context "when an email missing from the items" do
-      let(:query_response) do
-        {
-          "Items" => [
-            {
-              "UserId" => { "S" => user_id },
-              "OneLoginSub" => { "S" => sub_id },
-              "CreatedAt" => { "S" => Time.now.to_s },
-              "EmailAddress" => { "S" => "encrypted_email_1" },
-              "OptOut" => { "BOOL" => false },
-              "BearerToken" => { "S" => "the-bearer-token" },
-            },
-            {
-              "UserId" => { "S" => user_id },
-              "OneLoginSub" => { "S" => sub_id },
-              "CreatedAt" => { "S" => Time.now.to_s },
-              "OptOut" => { "BOOL" => false },
-              "BearerToken" => { "S" => "the-bearer-token" },
-            },
-            {
-              "UserId" => { "S" => user_id },
-              "OneLoginSub" => { "S" => sub_id },
-              "CreatedAt" => { "S" => Time.now.to_s },
-              "EmailAddress" => { "S" => "encrypted_email_2" },
-              "OptOut" => { "BOOL" => false },
-              "BearerToken" => { "S" => "the-bearer-token" },
-            },
-          ],
-          "Count" => 3,
-        }.to_json
-      end
-
-      before do
-        stub_request(:post, "https://dynamodb.eu-west-2.amazonaws.com/")
-          .with(
-            headers: {
-              "Host" => "dynamodb.eu-west-2.amazonaws.com",
-              "X-Amz-Target" => "DynamoDB_20120810.Scan",
-            },
-          )
-          .to_return(status: 200, body: query_response, headers: {})
-      end
-
-      it "returns the emails" do
-        expect(gateway.get_opt_in_users).to eq %w[test@email.com name.test@email.com]
-      end
     end
   end
 end

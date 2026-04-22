@@ -42,16 +42,19 @@ module Gateway
     end
 
     def get_user(one_login_sub)
-      response = @table.scan(
+      items = []
+      params = {
         filter_expression: "OneLoginSub = :sub",
         expression_attribute_values: {
           ":sub" => one_login_sub,
         },
-      )
+      }
 
-      raise Errors::MultipleUsersWithSameSubError if response.count > 1
+      scan_all_pages(params) do |page_items|
+        items.concat(page_items)
+      end
 
-      response.count.zero? ? nil : response.items.first["UserId"]
+      items.count.zero? ? nil : items.first["UserId"]
     end
 
     def get_user_token(user_id)
@@ -99,23 +102,17 @@ module Gateway
       )
     end
 
-    def get_opt_in_users
-      users = @table.scan(
-        filter_expression: "OptOut = :o",
-        expression_attribute_values: {
-          ":o" => false,
-        },
-      )
-      emails = []
-      users.items.each do |item|
-        emails << @kms_gateway.decrypt(item["EmailAddress"]) unless item["EmailAddress"].nil?
-      rescue Errors::KmsDecryptionError
-        next
-      end
-      emails
-    end
-
   private
+
+    def scan_all_pages(params)
+      loop do
+        resp = @table.scan(params)
+        yield resp.items
+        break unless resp.last_evaluated_key
+
+        params[:exclusive_start_key] = resp.last_evaluated_key
+      end
+    end
 
     def get_dynamo_db_client
       if Aws.config.dig(:dynamodb, :client)
